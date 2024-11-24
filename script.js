@@ -1,30 +1,35 @@
-// Definir a data inicial (dia do casamento)
-const startDate = new Date('2021-11-20T00:00:00');
-
-// Função para atualizar o contador
 function updateCounter() {
-    const now = new Date();
-    const diff = now - startDate;
+    const targetDate = new Date("2024-11-29T00:00:00"); // Substitua pela data alvo
+    const currentDate = new Date();
 
-    // Cálculos para anos, meses, dias, horas, minutos e segundos
-    const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
-    const months = Math.floor((diff % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24 * 30.44));
-    const days = Math.floor((diff % (1000 * 60 * 60 * 24 * 30.44)) / (1000 * 60 * 60 * 24));
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    const seconds = now.getSeconds();
+    // Diferença em milissegundos
+    const diff = targetDate - currentDate;
 
-    // Atualizar o HTML com os valores calculados
-    document.getElementById('years').textContent = String(years).padStart(2, '0');
-    document.getElementById('months').textContent = String(months).padStart(2, '0');
-    document.getElementById('days').textContent = String(days).padStart(2, '0');
-    document.getElementById('hours').textContent = String(hours).padStart(2, '0');
-    document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
-    document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+    if (diff <= 0) {
+        // Se a data alvo passou, zera o contador
+        document.getElementById("years").textContent = "00";
+        document.getElementById("months").textContent = "00";
+        document.getElementById("days").textContent = "00";
+        document.getElementById("hours").textContent = "00";
+        document.getElementById("minutes").textContent = "00";
+        document.getElementById("seconds").textContent = "00";
+        return;
+    }
+
+    // Conversão das diferenças
+    const seconds = Math.floor((diff / 1000) % 60);
+    const minutes = Math.floor((diff / 1000 / 60) % 60);
+    const hours = Math.floor((diff / 1000 / 60 / 60) % 24);
+    const days = Math.floor(diff / 1000 / 60 / 60 / 24);
+
+    // Atualização do DOM
+    document.getElementById("years").textContent = "00"; // Não estamos calculando anos aqui
+    document.getElementById("months").textContent = "00"; // Não estamos calculando meses aqui
+    document.getElementById("days").textContent = days.toString().padStart(2, "0");
+    document.getElementById("hours").textContent = hours.toString().padStart(2, "0");
+    document.getElementById("minutes").textContent = minutes.toString().padStart(2, "0");
+    document.getElementById("seconds").textContent = seconds.toString().padStart(2, "0");
 }
 
-// Atualizar o contador a cada segundo
+// Atualiza o contador a cada segundo
 setInterval(updateCounter, 1000);
-
-// Chamar uma vez para iniciar
-updateCounter();
