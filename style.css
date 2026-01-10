@@ -337,9 +337,4 @@ h1 {
         text-shadow: none !important; /* Sombras pesam muito no processamento mobile */
         filter: none !important;
     }
-    .hero{
-         background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
-                url('./imagens/Mikaely\ e\ Talyson\ fundo_cell.JPG') center/cover no-repeat fixed;
-        background-attachment: fixed;
-    }
 }
