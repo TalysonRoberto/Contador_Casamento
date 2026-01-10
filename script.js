@@ -1,10 +1,17 @@
-// Lógica do Contador
+// --- CONFIGURAÇÕES INICIAIS ---
+const weddingDate = new Date('2021-11-20T00:00:00');
+const overlay = document.getElementById('welcome-overlay');
+const startBtn = document.getElementById('start-button');
+const music = document.getElementById('background-music');
+const musicBtn = document.getElementById('music-control');
+const musicIcon = document.getElementById('music-icon');
+let heartInterval;
+
+// --- LÓGICA DO CONTADOR ---
 function updateCounter() {
-  const weddingDate = new Date('2021-11-20T00:00:00');
   const now = new Date();
   let diff = now - weddingDate;
 
-  // Cálculo simplificado para anos, meses e dias
   let years = now.getFullYear() - weddingDate.getFullYear();
   let months = now.getMonth() - weddingDate.getMonth();
   let days = now.getDate() - weddingDate.getDate();
@@ -30,22 +37,18 @@ function updateCounter() {
   document.getElementById('seconds').innerText = Math.floor((diff / 1000) % 60);
 }
 
-// Lógica do Slider
+// --- LÓGICA DO SLIDER ---
 let currentSlide = 0;
 const slides = document.querySelectorAll('.slide');
 
 function changeSlide(direction) {
+  if (slides.length === 0) return;
   slides[currentSlide].classList.remove('active');
   currentSlide = (currentSlide + direction + slides.length) % slides.length;
   slides[currentSlide].classList.add('active');
 }
 
-// Auto-play do slider (cada 5 segundos)
-setInterval(() => changeSlide(1), 5000);
-
-setInterval(updateCounter, 1000);
-updateCounter();
-
+// --- LÓGICA DOS CORAÇÕES (OTIMIZADA) ---
 function createHeart() {
   const container = document.getElementById('hearts-container');
   if (!container) return;
@@ -56,35 +59,22 @@ function createHeart() {
   const types = ['❤', '✨', '♥', '🌸'];
   heart.innerText = types[Math.floor(Math.random() * types.length)];
 
-  // Posição horizontal aleatória
-  heart.style.left = Math.random() * 95 + 'vw';
+  // Posição horizontal segura (evita scroll lateral)
+  heart.style.left = Math.random() * 90 + 5 + 'vw';
 
-  // TRUQUE PARA LONG PAGE: Faz o coração aparecer perto de onde o usuário está scrollado
-  const scrollY = window.scrollY;
-  const windowHeight = window.innerHeight;
-  const startPos = scrollY - 50; // Começa um pouco acima do que você vê
-
-  heart.style.top = startPos + 'px';
-
-  // Cores variadas para garantir visibilidade
-  const colors = ['#C5A059', '#E6BE8A', '#8B4513', '#ffebc4'];
+  // Cores da paleta
+  const colors = ['#C5A059', '#E6BE8A', '#ffebc4'];
   heart.style.color = colors[Math.floor(Math.random() * colors.length)];
-
   heart.style.fontSize = Math.random() * 15 + 12 + 'px';
 
-  // Duração da queda
-  const duration = Math.random() * 3 + 4;
-  heart.style.animationDuration = duration + 's';
+  const duration = Math.random() * 3 + 5;
 
-  // Faz ele cair uma distância proporcional à tela
+  // Animação usando translate3d para performance (usa a GPU do celular)
   heart.animate(
     [
-      { transform: `translateY(0) rotate(0deg)`, opacity: 0 },
-      {
-        transform: `translateY(${windowHeight * 0.8}px) rotate(360deg)`,
-        opacity: 0.8,
-      },
-      { transform: `translateY(${windowHeight}px) rotate(720deg)`, opacity: 0 },
+      { transform: 'translate3d(0, -10vh, 0) rotate(0deg)', opacity: 0 },
+      { opacity: 0.8, offset: 0.2 },
+      { transform: 'translate3d(0, 105vh, 0) rotate(360deg)', opacity: 0 },
     ],
     {
       duration: duration * 1000,
@@ -93,35 +83,31 @@ function createHeart() {
   );
 
   container.appendChild(heart);
-
-  setTimeout(() => {
-    heart.remove();
-  }, duration * 1000);
+  setTimeout(() => heart.remove(), duration * 1000);
 }
 
-setInterval(createHeart, 400);
+// --- EVENTOS E INICIALIZAÇÃO ---
 
-const overlay = document.getElementById('welcome-overlay');
-const startBtn = document.getElementById('start-button');
-const music = document.getElementById('background-music');
-const musicBtn = document.getElementById('music-control');
-const musicIcon = document.getElementById('music-icon');
-
+// Inicia o site ao clicar no botão da Splash Screen
 startBtn.addEventListener('click', () => {
-  // 1. Esconde a tela de entrada com suavidade
   overlay.classList.add('welcome-hidden');
 
-  // 2. Toca a música
-  music.play().catch((error) => console.log('Erro ao tocar música:', error));
+  // Tocar música
+  music.play().catch((error) => console.log('Erro ao tocar:', error));
 
-  // 3. Mostra o botão de controle de som (🎵)
+  // Mostrar controle de música
   musicBtn.style.display = 'flex';
   musicBtn.classList.add('playing');
   musicIcon.innerText = '🔊';
+
+  // Iniciar corações com verificação de celular
+  const isMobile = window.innerWidth <= 768;
+  heartInterval = setInterval(createHeart, isMobile ? 600 : 300);
 });
 
-// Controle manual de pausa/play
-musicBtn.addEventListener('click', () => {
+// Controle de Pausa/Play
+musicBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
   if (music.paused) {
     music.play();
     musicIcon.innerText = '🔊';
@@ -132,3 +118,8 @@ musicBtn.addEventListener('click', () => {
     musicBtn.classList.remove('playing');
   }
 });
+
+// Timers Globais
+setInterval(updateCounter, 1000);
+setInterval(() => changeSlide(1), 5000);
+updateCounter();
