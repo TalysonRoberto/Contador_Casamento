@@ -53,27 +53,26 @@ function createHeart() {
   const container = document.getElementById('hearts-container');
   if (!container) return;
 
+  // Limite máximo de corações na tela ao mesmo tempo para evitar travamento
+  if (container.children.length > 15) return;
+
   const heart = document.createElement('div');
   heart.classList.add('heart');
-
   const types = ['❤', '✨', '♥', '🌸'];
   heart.innerText = types[Math.floor(Math.random() * types.length)];
 
-  // Posição horizontal segura (evita scroll lateral)
-  heart.style.left = Math.random() * 90 + 5 + 'vw';
-
-  // Cores da paleta
+  heart.style.left = Math.random() * 85 + 5 + 'vw';
   const colors = ['#C5A059', '#E6BE8A', '#ffebc4'];
   heart.style.color = colors[Math.floor(Math.random() * colors.length)];
-  heart.style.fontSize = Math.random() * 15 + 12 + 'px';
+  heart.style.fontSize = Math.random() * 10 + 12 + 'px';
 
-  const duration = Math.random() * 3 + 5;
+  // No celular, a animação é um pouco mais rápida para o elemento sumir logo da memória
+  const duration = window.innerWidth <= 430 ? 4 : Math.random() * 3 + 5;
 
-  // Animação usando translate3d para performance (usa a GPU do celular)
   heart.animate(
     [
       { transform: 'translate3d(0, -10vh, 0) rotate(0deg)', opacity: 0 },
-      { opacity: 0.8, offset: 0.2 },
+      { opacity: 0.7, offset: 0.2 },
       { transform: 'translate3d(0, 105vh, 0) rotate(360deg)', opacity: 0 },
     ],
     {
@@ -100,9 +99,22 @@ startBtn.addEventListener('click', () => {
   musicBtn.classList.add('playing');
   musicIcon.innerText = '🔊';
 
-  // Iniciar corações com verificação de celular
-  const isMobile = window.innerWidth <= 768;
-  heartInterval = setInterval(createHeart, isMobile ? 600 : 300);
+  // AJUSTE DE PERFORMANCE PARA CELULAR
+  const windowWidth = window.innerWidth;
+  let heartSpeed;
+
+  if (windowWidth <= 430) {
+    // Celulares pequenos: um coração a cada 1.2 segundos (bem leve)
+    heartSpeed = 1200;
+  } else if (windowWidth <= 768) {
+    // Celulares maiores/Tablets: um a cada 800ms
+    heartSpeed = 800;
+  } else {
+    // PC: um a cada 350ms (efeito cheio)
+    heartSpeed = 350;
+  }
+
+  heartInterval = setInterval(createHeart, heartSpeed);
 });
 
 // Controle de Pausa/Play
