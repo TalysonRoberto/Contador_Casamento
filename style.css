@@ -36,6 +36,7 @@ h1 {
     font-family: 'Cinzel', serif;
     font-size: clamp(2rem, 10vw, 5rem);
     letter-spacing: 5px;
+    font-weight: 400; /* Fontes cursivas geralmente ficam melhores mais finas */
 }
 
 .divider {
@@ -193,6 +194,115 @@ h1 {
 
 .video-link-card:hover img {
     transform: scale(1.1);
+}
+
+.music-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: none;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease;
+}
+
+.music-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Tela Cheia */
+.welcome-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, #1B263B 0%, #0d131d 100%); /* Azul profundo da paleta */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20000; /* Acima de tudo */
+    transition: opacity 1.5s ease, visibility 1.5s;
+    color: white;
+    text-align: center;
+}
+
+.welcome-content {
+    animation: fadeIn 2s ease-out;
+}
+
+.welcome-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: 4px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+}
+
+.welcome-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(3.5rem, 12vw, 6rem); /* Aumentei um pouco para dar impacto */
+    color: var(--gold);
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+    margin: 10px 0;
+    font-weight: 400; /* Fontes cursivas geralmente ficam melhores mais finas */
+}
+
+.welcome-divider {
+    width: 60px;
+    height: 1px;
+    background: var(--gold);
+    margin: 30px auto;
+}
+
+.start-btn {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 15px 40px;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.5s ease;
+    border-radius: 50px;
+}
+
+.start-btn:hover {
+    background: var(--gold);
+    color: #1B263B;
+    box-shadow: 0 0 20px rgba(197, 160, 89, 0.4);
+}
+
+/* Esconder a tela ao clicar */
+.welcome-hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Classe para quando a música estiver tocando (opcional: animação de balanço) */
+.playing {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(197, 160, 89, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(197, 160, 89, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(197, 160, 89, 0); }
 }
 
 @media screen and (max-width: 926px) {

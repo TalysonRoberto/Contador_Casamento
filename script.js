@@ -100,3 +100,35 @@ function createHeart() {
 }
 
 setInterval(createHeart, 400);
+
+const overlay = document.getElementById('welcome-overlay');
+const startBtn = document.getElementById('start-button');
+const music = document.getElementById('background-music');
+const musicBtn = document.getElementById('music-control');
+const musicIcon = document.getElementById('music-icon');
+
+startBtn.addEventListener('click', () => {
+  // 1. Esconde a tela de entrada com suavidade
+  overlay.classList.add('welcome-hidden');
+
+  // 2. Toca a música
+  music.play().catch((error) => console.log('Erro ao tocar música:', error));
+
+  // 3. Mostra o botão de controle de som (🎵)
+  musicBtn.style.display = 'flex';
+  musicBtn.classList.add('playing');
+  musicIcon.innerText = '🔊';
+});
+
+// Controle manual de pausa/play
+musicBtn.addEventListener('click', () => {
+  if (music.paused) {
+    music.play();
+    musicIcon.innerText = '🔊';
+    musicBtn.classList.add('playing');
+  } else {
+    music.pause();
+    musicIcon.innerText = '🔈';
+    musicBtn.classList.remove('playing');
+  }
+});
